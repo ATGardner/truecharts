@@ -3,6 +3,7 @@
 enabled: true
 data:
   SERVERURL: {{ .Values.wg.serverUrl | quote }}
+
   {{- if hasKey .Values.wg "serverPort" }}
   SERVERPORT: {{ .Values.wg.serverPort | quote }}
   {{- end }}
@@ -18,6 +19,7 @@ data:
   {{- if hasKey .Values.wg "peerDns" }}
   PEERDNS: {{ .Values.wg.peerDns}}
   {{- end }}
+
   {{- if hasKey .Values.wg "internalSubnet" }}
   INTERNAL_SUBNET: {{ .Values.wg.internalSubnet }}
   {{- end }}
@@ -37,12 +39,15 @@ data:
   PERSISTENTKEEPALIVE_PEERS: {{ .Values.wg.persistentKeepAlivePeers | quote }}
     {{- end }}
   {{- end }}
+
   {{- if hasKey .Values.wg "logConfs" }}
   LOG_CONFS: {{ .Values.wg.logConfs | quote }}
   {{- end }}
+
   SEPARATOR: ";"
   IPTABLES_BACKEND: nft
   KILLSWITCH: {{ .Values.wg.killswitch | quote }}
+
   {{- if .Values.wg.killswitch }}
     {{- $excludedIP4Networks := prepend .Values.wg.excludedIP4networks .Values.chartContext.podCIDR }}
     {{- $excludedIP4net := (join ";" $excludedIP4Networks) }}
