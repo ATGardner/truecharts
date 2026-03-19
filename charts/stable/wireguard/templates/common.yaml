@@ -7,13 +7,10 @@
   {{- $_ := set .Values.configmap "wg-env-config" $configmap -}}
 {{- end -}}
 
-{{/* Render secret for wireguard */}}
-{{- $secret := include "wg.config-secret" . | fromYaml -}}
-{{- if $secret -}}
-  {{- $_ := set .Values.secret "wg-config-secret" $secret -}}
-{{- end -}}
-
-{{- $_ := set .Values.persistence "configfile" (include "wireguard.configfile" . | fromYaml) -}}
+{{/* Copy config.serverPort to service */}}
+{{- $_ := set .Values.service.main.ports.main "port" .Values.wg.serverPort -}}
+{{/* This should never be changed by the user  */}}
+{{- $_ := set .Values.service.main.ports.main "targetPort" "51820" -}}
 
 {{/* Render the templates */}}
 {{ include "tc.v1.common.loader.apply" . }}

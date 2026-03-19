@@ -1,45 +1,59 @@
 # yaml-language-server: $schema=./values.schema.json
 image:
-  repository: ghcr.io/k8s-at-home/wireguard
-  tag: v1.0.20210914@sha256:4dd54954cbd06d92d8c8fc6b10871eb07a0c1869edfe7a15029f1a7d3178d432
+  repository: linuxserver/wireguard
+  tag: 1.0.20250521-r0-ls99@sha256:4167f3f682b88b5c2548740d4ebb1592f226f864b4d110c9ebb85d270bc827cb
   pullPolicy: IfNotPresent
+
 wg:
+  # External IP or domain name for docker host. Used in server mode. If set to auto, the container will try to determine and set the external IP automatically
+  serverUrl: auto
+
+  # External port for docker host. Used in server mode.
+  serverPort: 51820
+
+  # Number of peers to create confs for. Required for server mode. Can also be a list of names: myPC,myPhone,myTablet (alphanumeric only), or a string array: ['myPC','myPhone','myTablet']
+  # peers: []
+
+  # DNS server set in peer/client configs (can be set as 8.8.8.8). Used in server mode. Defaults to auto, which uses wireguard docker host's DNS via included CoreDNS forward.
+  # peerdns: auto
+
+  # Internal subnet for the wireguard and server and peers (only change if it clashes). Used in server mode.
+  # internalSubnet: 10.13.13.0
+
+  # The IPs/Ranges that the peers will be able to reach using the VPN connection. If not specified the default value is: '0.0.0.0/0, ::0/0' This will cause ALL traffic to route through the VPN, if you want split tunneling, set this to only the IPs you would like to use the tunnel AND the ip of the server's WG ip, such as 10.13.13.1.
+  # allowedIps: 0.0.0.0/0
+
+  # Set to 'all' or a list of comma separated peers (ie. 1,4,laptop) or string array (['1', '4', 'laptop']) for the wireguard server to send keepalive packets to listed peers every 25 seconds. Useful if server is accessed via domain name and has dynamic IP. Used only in server mode.
+  # persistentKeepAlivePeers: all
+
+  # Generated QR codes will be displayed in the docker log. Set to false to skip log output.
+  # logConfs: true
+
   killswitch: false
   excludedIP4networks: []
   excludedIP6networks: []
-  # Leave empty if you going to use the paste your config bellow
-  configFileHostPath: ""
-  config:
-    enabled: false
-    # Your wg config here eg:
-    data: |
-      [Interface]
-      Address = 10.0.0.1/24
-      ListenPort = 51820
-      PrivateKey = PRIVATE_KEY
 
-      [Peer]
-      PublicKey = PUBLIC_KEY
-      AllowedIPs = 0.0.0.0/0
-      Endpoint = wg.example:51820
 service:
   main:
     ports:
       main:
-        port: 51821
-        targetPort: 51820
         protocol: udp
 
 securityContext:
   container:
     runAsNonRoot: false
     readOnlyRootFilesystem: false
+    runAsUser: 0
+    runAsGroup: 0
+    PUID: 0
     capabilities:
       add:
         - NET_ADMIN
         - SYS_MODULE
-    runAsUser: 0
-    runAsGroup: 0
+
+  pod:
+    fsGroup: 0
+
 workload:
   main:
     podSpec:
@@ -48,10 +62,13 @@ workload:
           probes:
             liveness:
               enabled: false
+
             readiness:
               enabled: false
+
             startup:
               enabled: false
+
           envFrom:
             - configMapRef:
                 name: "wg-env-config"
