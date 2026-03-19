@@ -31,8 +31,9 @@ maintainers:
     url: https://trueforge.org
 name: wireguard
 sources:
-  - https://ghcr.io/k8s-at-home/wireguard
-  - https://github.com/k8s-at-home/container-images/tree/main/apps/wireguard
+  - https://docs.linuxserver.io/images/docker-wireguard/
+  - https://github.com/linuxserver/docker-wireguard
+  - https://github.com/truecharts/charts/tree/master/charts/stable/wireguard
   - https://github.com/trueforge-org/truecharts/tree/master/charts/stable/wireguard
 type: application
 version: 11.17.2
