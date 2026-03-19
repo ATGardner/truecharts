@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=./values.schema.json
 image:
   repository: linuxserver/wireguard
-  tag: 1.0.20250521@sha256:c9863e07db79437228fa6b174523491abf9c560fb4c273a635214440e7b46c41
+  tag: 1.0.20250521-r0-ls90@sha256:394cc1146ad854096889548c60aab91aeff8017ed757d96eb4908a7dbe46856e
   pullPolicy: IfNotPresent
 
 wg:
